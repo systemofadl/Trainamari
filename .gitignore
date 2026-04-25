@@ -1,9 +1,33 @@
-/Assets/Scripts/
-/Assets/Shaders/
-/Assets/Materials/
-/Assets/Prefabs/
-/Assets/Scenes/
-/Assets/Textures/
-/Assets/Models/
-/Assets/Animations/
-/Assets/ScriptableObjects/
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Unity cache
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.pidb
+*.booproj
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Build output
+*.apk
+*.aab
+*.exe
+*.app
