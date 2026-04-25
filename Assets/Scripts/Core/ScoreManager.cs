@@ -59,7 +59,7 @@ namespace Trainamari.Core
             // Smooth stop bonus
             if (stopAccuracy <= GameConstants.PERFECT_STOP_DISTANCE)
             {
-                AddScore(GameConstants.SMOOTH_STOP_BONUS, "PERFECT STOP!");
+                AddScore(Mathf.RoundToInt(GameConstants.SMOOTH_STOP_BONUS), "PERFECT STOP!");
                 AddCombo();
             }
             else if (stopAccuracy <= GameConstants.GOOD_STOP_DISTANCE)

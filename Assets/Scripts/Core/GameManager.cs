@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Trainamari.Train;
 using Trainamari.Input;
+using Trainamari.UI;
 
 namespace Trainamari.Core
 {
@@ -43,7 +44,7 @@ namespace Trainamari.Core
         
         // Events for UI/Audio
         public System.Action<GameState> OnStateChanged;
-        public System.Action<Level.LevelResult> OnLevelComplete;
+        public System.Action<LevelResult> OnLevelComplete;
         public System.Action OnDerailment;
         public System.Action<string> OnStationApproach;
         

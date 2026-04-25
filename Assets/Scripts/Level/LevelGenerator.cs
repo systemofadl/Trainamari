@@ -203,8 +203,8 @@ namespace Trainamari.Level
             trunk.transform.localScale = new Vector3(0.3f, 2f, 0.3f);
             trunk.transform.localPosition = Vector3.up * 1f;
             
-            // Canopy
-            GameObject canopy = GameObject.CreatePrimitive(PrimitiveType.Cone);
+            // Canopy (Unity has no Cone primitive — Capsule gives a chunky PS1-tree look)
+            GameObject canopy = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             canopy.transform.parent = tree.transform;
             canopy.transform.localScale = new Vector3(2f, 3f, 2f);
             canopy.transform.localPosition = Vector3.up * 3.5f;

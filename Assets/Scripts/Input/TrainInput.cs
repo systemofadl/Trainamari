@@ -30,8 +30,12 @@ namespace Trainamari.Input
         
         [Header("Densha de Go Controller")]
         [SerializeField] private bool detectDenshaController = true;
-        [SerializeField] private string denshaDeviceName = "Densha"; // partial match
-        [SerializeField] private int denshaLeverAxis = 1; // Y-axis for lever
+        [SerializeField] private string denshaDeviceName = "Densha"; // partial match on joystick name
+        // Names of axes configured in Project Settings > Input Manager.
+        // Add an axis named "DenshaLever" mapped to the joystick axis your adapter exposes
+        // (use the JoystickCalibration scene to find which one).
+        [SerializeField] private string denshaLeverAxisName = "DenshaLever";
+        [SerializeField] private bool invertLever = false;
         [SerializeField] private int denshaHornButton = 0;
         [SerializeField] private int denshaDoorButton = 1;
         
@@ -52,6 +56,7 @@ namespace Trainamari.Input
         private float keyboardThrottleSpeed = 2f; // how fast keyboard ramps throttle
         private bool prevHorn = false;
         private bool prevDoorClose = false;
+        private bool loggedMissingAxis = false;
         
         private void Start()
         {
@@ -147,22 +152,34 @@ namespace Trainamari.Input
             //   Axis value >0 = accelerate (positions 1-5)
             //   Axis value <0 = brake (positions 1-8 + emergency)
             
-            float leverValue = UnityEngine.Input.GetAxis($"joystick_1_axis_{denshaLeverAxis}");
-            
+            float leverValue = 0f;
+            try
+            {
+                leverValue = UnityEngine.Input.GetAxis(denshaLeverAxisName);
+            }
+            catch (System.ArgumentException)
+            {
+                // Axis isn't configured in the Input Manager yet. Fall back to keyboard
+                // and warn once so the user knows to set it up.
+                if (!loggedMissingAxis)
+                {
+                    Debug.LogWarning($"[TrainInput] Input Manager axis '{denshaLeverAxisName}' is not configured. " +
+                                     "Open Project Settings > Input Manager and add it, or use the JoystickCalibration scene.");
+                    loggedMissingAxis = true;
+                }
+                Throttle = keyboardThrottle;
+                return;
+            }
+
+            if (invertLever) leverValue = -leverValue;
+
             // Dead zone for neutral
-            if (Mathf.Abs(leverValue) < 0.1f)
-            {
-                Throttle = 0f;
-            }
-            else
-            {
-                Throttle = leverValue;
-            }
-            
-            // Emergency brake: lever pulled all the way back OR button combo
+            Throttle = (Mathf.Abs(leverValue) < 0.1f) ? 0f : leverValue;
+
+            // Emergency brake: lever pulled all the way back OR keyboard fallback
             EmergencyBrake = leverValue <= -0.95f || UnityEngine.Input.GetKey(emergencyBrake);
-            
-            // Buttons on the Densha controller
+
+            // Buttons on the Densha controller — these string forms ARE valid legacy Input names.
             Horn = UnityEngine.Input.GetKey($"joystick 1 button {denshaHornButton}");
             DoorClose = UnityEngine.Input.GetKey($"joystick 1 button {denshaDoorButton}");
         }

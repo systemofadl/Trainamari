@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Trainamari.Core;
 using Trainamari.Train;
 using Trainamari.Input;
 
@@ -59,22 +60,21 @@ namespace Trainamari.UI
         private void UpdateSpeedDisplay()
         {
             float speed = train.CurrentSpeed;
-            speedText.text = $"{Mathf.RoundToInt(speed)} km/h";
-            
-            // Color code: green -> yellow -> red as speed increases
             float speedRatio = speed / GameConstants.MAX_SPEED;
-            if (speedRatio < 0.6f)
-                speedText.color = ps1Green;
-            else if (speedRatio < 0.85f)
-                speedText.color = ps1Yellow;
-            else
-                speedText.color = ps1Red;
+
+            if (speedText != null)
+            {
+                speedText.text = $"{Mathf.RoundToInt(speed)} km/h";
+                if (speedRatio < 0.6f) speedText.color = ps1Green;
+                else if (speedRatio < 0.85f) speedText.color = ps1Yellow;
+                else speedText.color = ps1Red;
+            }
             
             // Speed bar fill
             if (speedBarFill != null)
             {
                 speedBarFill.fillAmount = speedRatio;
-                speedBarFill.color = speedText.color;
+                speedBarFill.color = speedText != null ? speedText.color : ps1White;
             }
         }
         
@@ -103,7 +103,7 @@ namespace Trainamari.UI
         
         private void UpdateScoreDisplay()
         {
-            if (scoreManager != null)
+            if (scoreManager != null && scoreText != null)
             {
                 scoreText.text = scoreManager.TotalScore.ToString("N0");
             }
